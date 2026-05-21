@@ -35,7 +35,7 @@ public class UserController {
 
     @PatchMapping("/")
     public ResponseEntity<UserEntity> updateUser(
-            @PathVariable String user_uid,
+            @RequestHeader("user_uid") String user_uid,
             @RequestBody Map<String, Object> input
     ) {
         UserEntity updatedUser = user_service.updateUser(user_uid, input);
