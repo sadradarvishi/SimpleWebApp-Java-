@@ -15,12 +15,13 @@ public class UserEntity {
     @Column(name = "user_uid")
     private String userUid;
 
-    @Column(name = "full_name")
+    @Column(name = "full_name", nullable = false)
     private String fullName;
 
+    @Column(name = "age", nullable = false)
     private int age;
 
-    @Column(name = "joined_at")
+    @Column(name = "joined_at", nullable = false)
     private Date joinedAt;
 
     public void setDeleted(Boolean deleted) {
