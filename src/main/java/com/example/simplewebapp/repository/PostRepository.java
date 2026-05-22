@@ -1,6 +1,7 @@
 package com.example.simplewebapp.repository;
 
-import com.example.simplewebapp.model.ProfileEntity;
+import com.example.simplewebapp.model.PostEntity;
+import jakarta.persistence.Entity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -8,12 +9,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProfileRepository extends JpaRepository<ProfileEntity, String> {
+public interface PostRepository extends JpaRepository<PostEntity, String> {
 
     @Query("""
-        SELECT p
-        FROM ProfileEntity p
-        JOIN FETCH p.user
+        select p
+        from PostEntity p
+        join fetch p.user
     """)
-    List<ProfileEntity> searchProfileWithUser();
+    List<PostEntity> searchPostsWithUsers();
 }

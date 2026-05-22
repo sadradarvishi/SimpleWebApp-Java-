@@ -24,7 +24,7 @@ public class ProfileService {
     }
 
     public List<ProfileEntity> searchProfiles() {
-        return profile_repository.findAll();
+        return profile_repository.searchProfileWithUser();
     }
 
     public ProfileEntity createProfile(String user_uid, Map<String, Object> input) {
