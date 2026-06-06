@@ -4,7 +4,6 @@ import com.example.simplewebapp.model.UserEntity;
 import com.example.simplewebapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -18,12 +17,12 @@ public class UserController {
     @Autowired
     UserService user_service;
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity input) {
         return ResponseEntity.ok(user_service.createUser(input));
     }
 
-    @GetMapping("/{user_uid}")
+    @GetMapping("/{user_uid}/")
     public ResponseEntity<UserEntity> getUser(@PathVariable String user_uid) {
         return ResponseEntity.ok(user_service.getUserById(user_uid));
     }
@@ -42,7 +41,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @DeleteMapping("/{user_uid}")
+    @DeleteMapping("/{user_uid}/")
     public ResponseEntity<Void> deleteUser(@PathVariable String user_uid) {
         user_service.deleteUser(user_uid);
         return ResponseEntity.noContent().build();

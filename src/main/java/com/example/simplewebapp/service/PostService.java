@@ -15,17 +15,17 @@ import java.util.Map;
 public class PostService {
 
     @Autowired
-    PostRepository post_repository;
+    PostRepository postRepository;
 
     @Autowired
-    UserRepository user_repository;
+    UserRepository userRepository;
 
     public PostEntity getPost(String post_uid) {
-        return post_repository.getById(post_uid);
+        return postRepository.findById(post_uid).orElseThrow(() -> new RuntimeException("No user found"));
     }
 
     public List<PostEntity> searchPosts() {
-        return post_repository.searchPostsWithUsers();
+        return postRepository.searchPostsWithUsers();
     }
 
     public PostEntity createPost(String user_uid, Map<String, Object> input) {
@@ -38,7 +38,7 @@ public class PostService {
             throw new IllegalArgumentException("content is required");
         }
 
-        UserEntity user = user_repository.findById(user_uid)
+        UserEntity user = userRepository.findById(user_uid)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         PostEntity post = new PostEntity();
@@ -53,12 +53,12 @@ public class PostService {
             post.setUpdatedAt((Date) input.get("updated_at"));
         }
 
-        return post_repository.save(post);
+        return postRepository.save(post);
     }
 
     public PostEntity updatePost(String post_uid, Map<String, Object> input) {
 
-        PostEntity post = post_repository.findById(post_uid)
+        PostEntity post = postRepository.findById(post_uid)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
         if (input.containsKey("title")) {
@@ -71,14 +71,14 @@ public class PostService {
 
         post.setUpdatedAt(new Date());
 
-        return post_repository.save(post);
+        return postRepository.save(post);
     }
 
     public void deletePost(String post_uid) {
 
-        PostEntity post = post_repository.findById(post_uid)
+        PostEntity post = postRepository.findById(post_uid)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
-        post_repository.delete(post);
+        postRepository.delete(post);
     }
 }

@@ -24,14 +24,14 @@ public class UserEntity {
     @Column(name = "joined_at", nullable = false)
     private Date joinedAt;
 
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
-    }
-
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
-    public Boolean getDeleted() {
+    public void setIsDeleted(Boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Boolean getIsDeleted() {
         return isDeleted;
     }
 

@@ -14,17 +14,17 @@ import java.util.Map;
 public class ProfileService {
 
     @Autowired
-    ProfileRepository profile_repository;
+    ProfileRepository profileRepository;
 
     @Autowired
-    UserRepository user_repository;
+    UserRepository userRepository;
 
     public ProfileEntity getProfile(String profile_uid) {
-        return profile_repository.getById(profile_uid);
+        return profileRepository.getById(profile_uid);
     }
 
     public List<ProfileEntity> searchProfiles() {
-        return profile_repository.searchProfileWithUser();
+        return profileRepository.searchProfileWithUser();
     }
 
     public ProfileEntity createProfile(String user_uid, Map<String, Object> input) {
@@ -36,7 +36,7 @@ public class ProfileService {
             throw new IllegalArgumentException("location is required");
         }
 
-        UserEntity user = user_repository.findById(user_uid)
+        UserEntity user = userRepository.findById(user_uid)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         ProfileEntity profile = new ProfileEntity();
@@ -53,6 +53,6 @@ public class ProfileService {
             profile.setWebsite((String) input.get("website"));
         }
 
-        return profile_repository.save(profile);
+        return profileRepository.save(profile);
     }
 }

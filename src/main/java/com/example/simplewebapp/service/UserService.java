@@ -13,22 +13,23 @@ import java.util.Map;
 public class UserService {
 
     @Autowired
-    UserRepository user_repository;
+    UserRepository userRepository;
 
     public UserEntity createUser(UserEntity input) {
-        return user_repository.save(input);
+        return userRepository.save(input);
     }
 
     public UserEntity getUserById(String user_uid) {
-        return user_repository.getById(user_uid);
+        return userRepository.findById(user_uid)
+                .orElseThrow(() -> new RuntimeException("No user found"));
     }
 
     public List<UserEntity> searchUsers() {
-        return user_repository.findAll();
+        return userRepository.searchUsers();
     }
 
     public UserEntity updateUser(String user_uid, Map<String, Object> input) {
-        UserEntity existingUser = user_repository.findById(user_uid)
+        UserEntity existingUser = userRepository.findById(user_uid)
                 .orElseThrow(() -> new RuntimeException("User not found with uid: " + user_uid));
 
         if (input.containsKey("full_name")) {
@@ -46,12 +47,14 @@ public class UserService {
             }
         }
 
-        return user_repository.save(existingUser);
+        return userRepository.save(existingUser);
     }
 
     public void deleteUser(String user_uid) {
-        UserEntity user = user_repository.getById(user_uid);
-        user.setDeleted(true);
-        user_repository.save(user);
+        UserEntity user = userRepository.findById(user_uid)
+                .orElseThrow(() -> new RuntimeException("No user found"));
+
+        user.setIsDeleted(true);
+        userRepository.save(user);
     }
 }
