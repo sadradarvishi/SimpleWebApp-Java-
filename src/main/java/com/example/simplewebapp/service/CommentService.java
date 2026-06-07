@@ -16,14 +16,19 @@ import java.util.Map;
 @Service
 public class CommentService {
 
-    @Autowired
-    CommentRepository comment_repository;
+    private final CommentRepository comment_repository;
+    private final PostRepository post_repository;
+    private final UserRepository user_repository;
 
-    @Autowired
-    PostRepository post_repository;
-
-    @Autowired
-    UserRepository user_repository;
+    public CommentService(
+            CommentRepository comment_repository,
+            PostRepository post_repository,
+            UserRepository user_repository
+    ) {
+        this.comment_repository = comment_repository;
+        this.post_repository = post_repository;
+        this.user_repository = user_repository;
+    }
 
     public CommentEntity getComment(String comment_uid) {
         return comment_repository.getById(comment_uid);

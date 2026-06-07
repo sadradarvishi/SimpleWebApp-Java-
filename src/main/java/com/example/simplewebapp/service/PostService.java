@@ -14,11 +14,13 @@ import java.util.Map;
 @Service
 public class PostService {
 
-    @Autowired
-    PostRepository postRepository;
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    public PostService(PostRepository postRepository, UserRepository userRepository) {
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
+    }
 
     public PostEntity getPost(String post_uid) {
         return postRepository.findById(post_uid).orElseThrow(() -> new RuntimeException("No user found"));

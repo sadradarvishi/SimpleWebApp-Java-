@@ -13,8 +13,11 @@ import java.util.Map;
 @RequestMapping("api/v1/comments")
 public class CommentController {
 
-    @Autowired
-    CommentService comment_service;
+    private final CommentService comment_service;
+
+    public CommentController(CommentService comment_service) {
+        this.comment_service = comment_service;
+    }
 
     @GetMapping("/{comment_uid}/")
     public ResponseEntity<CommentEntity> getComment(@PathVariable String comment_uid) {

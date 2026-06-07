@@ -13,8 +13,11 @@ import java.util.Map;
 @RequestMapping("api/v1/profiles")
 public class ProfileController {
 
-    @Autowired
-    ProfileService profile_service;
+    private final ProfileService profile_service;
+
+    public ProfileController(ProfileService profile_service) {
+        this.profile_service = profile_service;
+    }
 
     @GetMapping("/{profile_uid}/")
     public ResponseEntity<ProfileEntity> getProfile(@PathVariable String profile_uid) {

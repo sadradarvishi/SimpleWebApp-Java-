@@ -13,11 +13,13 @@ import java.util.Map;
 @Service
 public class ProfileService {
 
-    @Autowired
-    ProfileRepository profileRepository;
+    private final ProfileRepository profileRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    public ProfileService(ProfileRepository profileRepository, UserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.profileRepository = profileRepository;
+    }
 
     public ProfileEntity getProfile(String profile_uid) {
         return profileRepository.getById(profile_uid);

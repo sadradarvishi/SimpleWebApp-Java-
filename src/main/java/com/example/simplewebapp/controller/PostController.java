@@ -13,8 +13,11 @@ import java.util.Map;
 @RequestMapping("api/v1/posts")
 public class PostController {
 
-    @Autowired
-    PostService post_service;
+    private final PostService post_service;
+
+    public PostController(PostService post_service) {
+        this.post_service = post_service;
+    }
 
     @GetMapping("/{post_uid}/")
     public ResponseEntity<PostEntity> getPost(

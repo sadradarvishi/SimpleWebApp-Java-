@@ -14,8 +14,11 @@ import java.util.Map;
 @RequestMapping("api/v1/users")
 public class UserController {
 
-    @Autowired
-    UserService user_service;
+    private final UserService user_service;
+
+    public UserController(UserService user_service) {
+        this.user_service = user_service;
+    }
 
     @PostMapping("/")
     public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity input) {

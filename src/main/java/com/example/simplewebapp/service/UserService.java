@@ -12,8 +12,11 @@ import java.util.Map;
 @Service
 public class UserService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public UserEntity createUser(UserEntity input) {
         return userRepository.save(input);
