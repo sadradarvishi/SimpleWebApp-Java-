@@ -1,5 +1,6 @@
 package com.example.simplewebapp.config.security;
 
+import com.example.simplewebapp.config.redis.TokenStore;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,9 +18,11 @@ import java.util.Collections;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final TokenStore tokenStore;
 
-    public JwtAuthFilter(JwtTokenProvider jwtTokenProvider) {
+    public JwtAuthFilter(JwtTokenProvider jwtTokenProvider, TokenStore tokenStore) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.tokenStore = tokenStore;
     }
 
     @Override
@@ -35,11 +38,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             if (jwtTokenProvider.validateToken(token)) {
                 String userUid = jwtTokenProvider.getUserUidFromToken(token);
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userUid, null, Collections.emptyList()
-                        );
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                String storedUid = tokenStore.getAuthTokenUserUid(token);
+                if (storedUid != null && storedUid.equals(userUid)) {
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userUid, null, Collections.emptyList()
+                            );
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
         }
 
