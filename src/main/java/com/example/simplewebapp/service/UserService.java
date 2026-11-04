@@ -3,6 +3,7 @@ package com.example.simplewebapp.service;
 import com.example.simplewebapp.model.UserEntity;
 import com.example.simplewebapp.repository.UserRepository;
 import com.example.simplewebapp.dto.user.CreateUserInputDTO;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -13,9 +14,14 @@ import java.util.Map;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder
+        ) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserEntity createUser(CreateUserInputDTO inputDto) {
@@ -25,7 +31,7 @@ public class UserService {
         user.setJoinedAt(inputDto.joinedAt());
         user.setIsDeleted(inputDto.isDeleted());
         user.setEmail(inputDto.email());
-        user.setPassword(inputDto.password());
+        user.setPassword(passwordEncoder.encode(inputDto.password()));
 
         return userRepository.save(user);
     }

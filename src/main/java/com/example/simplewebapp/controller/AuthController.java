@@ -1,7 +1,7 @@
 package com.example.simplewebapp.controller;
 
-import com.example.simplewebapp.dto.auth.LoginRequest;
-import com.example.simplewebapp.dto.auth.LoginResponse;
+import com.example.simplewebapp.dto.auth.LoginRequestDTO;
+import com.example.simplewebapp.dto.auth.LoginResponseDTO;
 import com.example.simplewebapp.dto.auth.RefreshTokenRequest;
 import com.example.simplewebapp.dto.auth.SignupRequest;
 import com.example.simplewebapp.dto.auth.SignupResponse;
@@ -22,8 +22,8 @@ public class AuthController {
     }
 
     @PostMapping("/login/")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        LoginResponse tokens = authService.login(request);
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO inputDto) {
+        LoginResponseDTO tokens = authService.login(inputDto);
         return ResponseEntity.ok(tokens);
     }
 
@@ -43,8 +43,8 @@ public class AuthController {
     }
 
     @PostMapping("/refresh/")
-    public ResponseEntity<LoginResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
-        LoginResponse tokens = authService.refreshAccessToken(request.refreshToken());
+    public ResponseEntity<LoginResponseDTO> refresh(@Valid @RequestBody RefreshTokenRequest request) {
+        LoginResponseDTO tokens = authService.refreshAccessToken(request.refreshToken());
         return ResponseEntity.ok(tokens);
     }
 }

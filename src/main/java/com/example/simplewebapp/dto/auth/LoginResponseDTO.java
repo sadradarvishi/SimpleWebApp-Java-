@@ -2,10 +2,10 @@ package com.example.simplewebapp.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record LoginResponse(
+public record LoginResponseDTO(
 
         @NotBlank
-        String authToken,
+        String accessToken,
 
         @NotBlank
         String refreshToken

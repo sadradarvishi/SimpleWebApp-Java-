@@ -2,8 +2,8 @@ package com.example.simplewebapp.service;
 
 import com.example.simplewebapp.config.redis.TokenStore;
 import com.example.simplewebapp.config.security.JwtTokenProvider;
-import com.example.simplewebapp.dto.auth.LoginRequest;
-import com.example.simplewebapp.dto.auth.LoginResponse;
+import com.example.simplewebapp.dto.auth.LoginRequestDTO;
+import com.example.simplewebapp.dto.auth.LoginResponseDTO;
 import com.example.simplewebapp.dto.auth.SignupRequest;
 import com.example.simplewebapp.dto.auth.SignupResponse;
 import com.example.simplewebapp.model.UserEntity;
@@ -33,25 +33,22 @@ public class AuthService {
         this.tokenStore = tokenStore;
     }
 
-    public LoginResponse login(LoginRequest request) {
+    public LoginResponseDTO login(LoginRequestDTO inputDto) {
         UserEntity user = userRepository
-                .findActiveUserByEmail(request.email())
+                .findActiveUserByEmail(inputDto.email())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        System.out.println(request.email());
-        System.out.println(request.password());
-
-        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+        if (!passwordEncoder.matches(inputDto.password(), user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
 
-        String authToken = jwtTokenProvider.generateAuthToken(user.getUserUid());
+        String accessToken = jwtTokenProvider.generateAuthToken(user.getUserUid());
         String refreshToken = jwtTokenProvider.generateRefreshToken(user.getUserUid());
 
-        tokenStore.storeAuthToken(authToken, user.getUserUid(), jwtTokenProvider.getAuthExpiration());
-        tokenStore.storeRefreshToken(refreshToken, user.getUserUid(), jwtTokenProvider.getRefreshExpiration());
+        //tokenStore.storeAuthToken(authToken, user.getUserUid(), jwtTokenProvider.getAuthExpiration());
+        //tokenStore.storeRefreshToken(refreshToken, user.getUserUid(), jwtTokenProvider.getRefreshExpiration());
 
-        return new LoginResponse(authToken, refreshToken);
+        return new LoginResponseDTO(accessToken, refreshToken);
     }
 
     public SignupResponse signUp(SignupRequest request) {
@@ -82,7 +79,7 @@ public class AuthService {
         tokenStore.removeAuthToken(authToken);
     }
 
-    public LoginResponse refreshAccessToken(String refreshToken) {
+    public LoginResponseDTO refreshAccessToken(String refreshToken) {
         if (!jwtTokenProvider.validateToken(refreshToken)) {
             throw new RuntimeException("Invalid refresh token");
         }
@@ -101,6 +98,6 @@ public class AuthService {
         tokenStore.storeAuthToken(newAuthToken, userUid, jwtTokenProvider.getAuthExpiration());
         tokenStore.storeRefreshToken(newRefreshToken, userUid, jwtTokenProvider.getRefreshExpiration());
 
-        return new LoginResponse(newAuthToken, newRefreshToken);
+        return new LoginResponseDTO(newAuthToken, newRefreshToken);
     }
 }
