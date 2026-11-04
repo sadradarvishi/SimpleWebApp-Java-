@@ -2,7 +2,8 @@ package com.example.simplewebapp.controller;
 
 import com.example.simplewebapp.model.UserEntity;
 import com.example.simplewebapp.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.simplewebapp.dto.user.CreateUserInputDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +21,9 @@ public class UserController {
         this.user_service = user_service;
     }
 
-    @PostMapping("/")
-    public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity input) {
-        return ResponseEntity.ok(user_service.createUser(input));
+    @PostMapping("/sign-up/")
+    public ResponseEntity<UserEntity> createUser(@RequestBody CreateUserInputDTO inputDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(user_service.createUser(inputDto));
     }
 
     @GetMapping("/{user_uid}/")

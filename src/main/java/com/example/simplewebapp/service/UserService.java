@@ -2,7 +2,7 @@ package com.example.simplewebapp.service;
 
 import com.example.simplewebapp.model.UserEntity;
 import com.example.simplewebapp.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.simplewebapp.dto.user.CreateUserInputDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -18,8 +18,16 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserEntity createUser(UserEntity input) {
-        return userRepository.save(input);
+    public UserEntity createUser(CreateUserInputDTO inputDto) {
+        UserEntity user = new UserEntity();
+        user.setFullName(inputDto.fullName());
+        user.setAge(inputDto.age());
+        user.setJoinedAt(inputDto.joinedAt());
+        user.setIsDeleted(inputDto.isDeleted());
+        user.setEmail(inputDto.email());
+        user.setPassword(inputDto.password());
+
+        return userRepository.save(user);
     }
 
     public UserEntity getUserById(String user_uid) {

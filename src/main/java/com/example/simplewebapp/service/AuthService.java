@@ -21,7 +21,12 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenStore tokenStore;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider, TokenStore tokenStore) {
+    public AuthService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtTokenProvider jwtTokenProvider,
+            TokenStore tokenStore
+    ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -32,6 +37,9 @@ public class AuthService {
         UserEntity user = userRepository
                 .findActiveUserByEmail(request.email())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        System.out.println(request.email());
+        System.out.println(request.password());
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
