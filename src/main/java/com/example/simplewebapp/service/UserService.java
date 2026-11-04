@@ -4,6 +4,7 @@ import com.example.simplewebapp.model.UserEntity;
 import com.example.simplewebapp.repository.UserRepository;
 import com.example.simplewebapp.dto.user.CreateUserInputDTO;
 import com.example.simplewebapp.dto.user.CreateUserOutputDTO;
+import com.example.simplewebapp.dto.user.GetUserOutputDTO;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,9 +47,18 @@ public class UserService {
         );
     }
 
-    public UserEntity getUserById(String user_uid) {
-        return userRepository.findById(user_uid)
+    public GetUserOutputDTO getUserById(String userUid) {
+        UserEntity user =  userRepository.getUserById(userUid)
                 .orElseThrow(() -> new RuntimeException("No user found"));
+
+        return new GetUserOutputDTO(
+                user.getUserUid(),
+                user.getFullName(),
+                user.getAge(),
+                user.getJoinedAt(),
+                user.getIsDeleted(),
+                user.getEmail()
+        );
     }
 
     public List<UserEntity> searchUsers() {

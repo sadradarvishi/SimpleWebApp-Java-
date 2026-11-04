@@ -26,4 +26,12 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
       and u.isDeleted = false
 """)
     Optional<UserEntity> findActiveUserByEmail(@Param("email") String email);
+
+    @Query("""
+    select u
+    from UserEntity u
+    where u.userUid = :userUid
+    and u.isDeleted = false
+""")
+    Optional<UserEntity> getUserById(@Param("userUid") String userUid);
 }

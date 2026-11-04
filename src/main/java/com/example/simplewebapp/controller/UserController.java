@@ -4,6 +4,7 @@ import com.example.simplewebapp.model.UserEntity;
 import com.example.simplewebapp.service.UserService;
 import com.example.simplewebapp.dto.user.CreateUserInputDTO;
 import com.example.simplewebapp.dto.user.CreateUserOutputDTO;
+import com.example.simplewebapp.dto.user.GetUserOutputDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +28,8 @@ public class UserController {
     }
 
     @GetMapping("/{user_uid}/")
-    public ResponseEntity<UserEntity> getUser(@PathVariable String user_uid) {
-        return ResponseEntity.ok(user_service.getUserById(user_uid));
+    public ResponseEntity<GetUserOutputDTO> getUser(@PathVariable("user_uid") String userUid) {
+        return ResponseEntity.ok(user_service.getUserById(userUid));
     }
 
     @GetMapping("/")
