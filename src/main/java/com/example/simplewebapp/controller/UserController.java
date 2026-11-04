@@ -3,11 +3,11 @@ package com.example.simplewebapp.controller;
 import com.example.simplewebapp.model.UserEntity;
 import com.example.simplewebapp.service.UserService;
 import com.example.simplewebapp.dto.user.CreateUserInputDTO;
+import com.example.simplewebapp.dto.user.CreateUserOutputDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping("/sign-up/")
-    public ResponseEntity<UserEntity> createUser(@RequestBody CreateUserInputDTO inputDto) {
+    public ResponseEntity<CreateUserOutputDTO> createUser(@RequestBody CreateUserInputDTO inputDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(user_service.createUser(inputDto));
     }
 

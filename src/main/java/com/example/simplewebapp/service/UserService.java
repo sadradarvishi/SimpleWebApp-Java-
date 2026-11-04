@@ -3,6 +3,7 @@ package com.example.simplewebapp.service;
 import com.example.simplewebapp.model.UserEntity;
 import com.example.simplewebapp.repository.UserRepository;
 import com.example.simplewebapp.dto.user.CreateUserInputDTO;
+import com.example.simplewebapp.dto.user.CreateUserOutputDTO;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,16 +25,25 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserEntity createUser(CreateUserInputDTO inputDto) {
+    public CreateUserOutputDTO createUser(CreateUserInputDTO inputDto) {
         UserEntity user = new UserEntity();
         user.setFullName(inputDto.fullName());
         user.setAge(inputDto.age());
-        user.setJoinedAt(inputDto.joinedAt());
+        user.setJoinedAt(new Date());
         user.setIsDeleted(inputDto.isDeleted());
         user.setEmail(inputDto.email());
         user.setPassword(passwordEncoder.encode(inputDto.password()));
 
-        return userRepository.save(user);
+        UserEntity userEntity = userRepository.save(user);
+
+        return new CreateUserOutputDTO(
+                userEntity.getUserUid(),
+                userEntity.getFullName(),
+                userEntity.getAge(),
+                userEntity.getJoinedAt(),
+                userEntity.getIsDeleted(),
+                userEntity.getEmail()
+        );
     }
 
     public UserEntity getUserById(String user_uid) {
