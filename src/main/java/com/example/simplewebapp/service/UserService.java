@@ -5,6 +5,8 @@ import com.example.simplewebapp.repository.UserRepository;
 import com.example.simplewebapp.dto.user.CreateUserInputDTO;
 import com.example.simplewebapp.dto.user.CreateUserOutputDTO;
 import com.example.simplewebapp.dto.user.GetUserOutputDTO;
+import com.example.simplewebapp.dto.user.SearchUserInputDTO;
+import com.example.simplewebapp.dto.user.SearchUserOutputDTO;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -61,8 +63,13 @@ public class UserService {
         );
     }
 
-    public List<UserEntity> searchUsers() {
-        return userRepository.searchUsers();
+    public List<SearchUserOutputDTO> searchUsers(SearchUserInputDTO inputDTO) {
+        return userRepository.searchUsers(
+                inputDTO.fullName(),
+                inputDTO.email(),
+                inputDTO.joinedDateFrom(),
+                inputDTO.joinedDateTo()
+        );
     }
 
     public UserEntity updateUser(String user_uid, Map<String, Object> input) {

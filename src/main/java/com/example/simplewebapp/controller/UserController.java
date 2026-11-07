@@ -5,6 +5,9 @@ import com.example.simplewebapp.service.UserService;
 import com.example.simplewebapp.dto.user.CreateUserInputDTO;
 import com.example.simplewebapp.dto.user.CreateUserOutputDTO;
 import com.example.simplewebapp.dto.user.GetUserOutputDTO;
+import com.example.simplewebapp.dto.user.SearchUserInputDTO;
+import com.example.simplewebapp.dto.user.SearchUserOutputDTO;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,8 +36,8 @@ public class UserController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<UserEntity>> searchUsers() {
-        return ResponseEntity.ok(user_service.searchUsers());
+    public ResponseEntity<List<SearchUserOutputDTO>> searchUsers(@ParameterObject SearchUserInputDTO inputDTO) {
+        return ResponseEntity.ok(user_service.searchUsers(inputDTO));
     }
 
     @PatchMapping("/")
