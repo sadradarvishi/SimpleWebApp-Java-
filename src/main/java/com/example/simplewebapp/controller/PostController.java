@@ -2,7 +2,6 @@ package com.example.simplewebapp.controller;
 
 import com.example.simplewebapp.model.PostEntity;
 import com.example.simplewebapp.service.PostService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

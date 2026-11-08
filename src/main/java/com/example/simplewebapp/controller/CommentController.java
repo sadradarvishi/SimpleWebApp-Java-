@@ -2,7 +2,6 @@ package com.example.simplewebapp.controller;
 
 import com.example.simplewebapp.model.CommentEntity;
 import com.example.simplewebapp.service.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
