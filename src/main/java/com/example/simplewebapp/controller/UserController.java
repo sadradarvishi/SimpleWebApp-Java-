@@ -7,6 +7,8 @@ import com.example.simplewebapp.dto.user.CreateUserOutputDTO;
 import com.example.simplewebapp.dto.user.GetUserOutputDTO;
 import com.example.simplewebapp.dto.user.SearchUserInputDTO;
 import com.example.simplewebapp.dto.user.SearchUserOutputDTO;
+import com.example.simplewebapp.dto.user.UpdateUserInputDTO;
+import com.example.simplewebapp.dto.user.UpdateUserOutputDTO;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,12 +43,8 @@ public class UserController {
     }
 
     @PatchMapping("/")
-    public ResponseEntity<UserEntity> updateUser(
-            @RequestHeader("user_uid") String user_uid,
-            @RequestBody Map<String, Object> input
-    ) {
-        UserEntity updatedUser = user_service.updateUser(user_uid, input);
-        return ResponseEntity.ok(updatedUser);
+    public ResponseEntity<UpdateUserOutputDTO> updateUser(@ParameterObject UpdateUserInputDTO inputDTO) {
+        return ResponseEntity.ok(user_service.updateUser(inputDTO));
     }
 
     @DeleteMapping("/{user_uid}/")

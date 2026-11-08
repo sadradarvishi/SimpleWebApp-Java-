@@ -7,6 +7,8 @@ import com.example.simplewebapp.dto.user.CreateUserOutputDTO;
 import com.example.simplewebapp.dto.user.GetUserOutputDTO;
 import com.example.simplewebapp.dto.user.SearchUserInputDTO;
 import com.example.simplewebapp.dto.user.SearchUserOutputDTO;
+import com.example.simplewebapp.dto.user.UpdateUserInputDTO;
+import com.example.simplewebapp.dto.user.UpdateUserOutputDTO;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -72,26 +74,37 @@ public class UserService {
         );
     }
 
-    public UserEntity updateUser(String user_uid, Map<String, Object> input) {
-        UserEntity existingUser = userRepository.findById(user_uid)
-                .orElseThrow(() -> new RuntimeException("User not found with uid: " + user_uid));
+    public UpdateUserOutputDTO updateUser(UpdateUserInputDTO inputDTO) {
+        UserEntity existingUser = userRepository.findById(inputDTO.userUid())
+                .orElseThrow(() -> new RuntimeException("User not found with uid: " + inputDTO.userUid()));
 
-        if (input.containsKey("full_name")) {
-            existingUser.setFullName((String) input.get("full_name"));
+        if (inputDTO.fullName() != null) {
+            existingUser.setFullName(inputDTO.fullName());
         }
 
-        if (input.containsKey("age")) {
-            existingUser.setAge((Integer) input.get("age"));
+        if (inputDTO.age() != null) {
+            existingUser.setAge(inputDTO.age());
         }
 
-        if (input.containsKey("joined_at")) {
-            Object dateObj = input.get("joined_at");
-            if (dateObj instanceof Date) {
-                existingUser.setJoinedAt((Date) dateObj);
-            }
+        if (inputDTO.email() != null) {
+            existingUser.setEmail(inputDTO.email());
         }
 
-        return userRepository.save(existingUser);
+        if (inputDTO.password() != null) {
+            String encodedPassword = passwordEncoder.encode(inputDTO.password());
+            existingUser.setPassword(encodedPassword);
+        }
+
+        userRepository.save(existingUser);
+
+        return new UpdateUserOutputDTO(
+                existingUser.getUserUid(),
+                existingUser.getFullName(),
+                existingUser.getAge(),
+                existingUser.getJoinedAt(),
+                existingUser.getIsDeleted(),
+                existingUser.getEmail()
+        );
     }
 
     public void deleteUser(String user_uid) {
