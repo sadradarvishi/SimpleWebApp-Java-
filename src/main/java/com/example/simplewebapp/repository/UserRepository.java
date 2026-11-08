@@ -27,8 +27,8 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     where u.isDeleted = false
       and (cast(:fullName as string) is null or lower(u.fullName) like lower(concat('%', cast(:fullName as string), '%')))
       and (cast(:email as string) is null or lower(u.email) = lower(cast(:email as string)))
-      and (cast(:from as timestamp) is null or u.joinedAt >= cast(:from as timestamp))
-      and (cast(:to as timestamp) is null or u.joinedAt <= cast(:to as timestamp))
+      and u.joinedAt >= coalesce(:from, u.joinedAt)
+      and u.joinedAt <= coalesce(:to,   u.joinedAt)
 """)
     List<SearchUserOutputDTO> searchUsers(@Param("fullName") String fullName,
                                           @Param("email") String email,
