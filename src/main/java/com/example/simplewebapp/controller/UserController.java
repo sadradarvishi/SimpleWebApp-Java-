@@ -9,6 +9,7 @@ import com.example.simplewebapp.dto.user.SearchUserInputDTO;
 import com.example.simplewebapp.dto.user.SearchUserOutputDTO;
 import com.example.simplewebapp.dto.user.UpdateUserInputDTO;
 import com.example.simplewebapp.dto.user.UpdateUserOutputDTO;
+import com.example.simplewebapp.dto.user.DeleteUserInputDTO;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,8 +49,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{user_uid}/")
-    public ResponseEntity<Void> deleteUser(@PathVariable String user_uid) {
-        user_service.deleteUser(user_uid);
+    public ResponseEntity<Void> deleteUser(@ParameterObject DeleteUserInputDTO inputDTO) {
+        user_service.deleteUser(inputDTO);
         return ResponseEntity.noContent().build();
     }
 }

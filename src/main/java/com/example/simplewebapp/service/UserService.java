@@ -9,6 +9,7 @@ import com.example.simplewebapp.dto.user.SearchUserInputDTO;
 import com.example.simplewebapp.dto.user.SearchUserOutputDTO;
 import com.example.simplewebapp.dto.user.UpdateUserInputDTO;
 import com.example.simplewebapp.dto.user.UpdateUserOutputDTO;
+import com.example.simplewebapp.dto.user.DeleteUserInputDTO;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -107,8 +108,8 @@ public class UserService {
         );
     }
 
-    public void deleteUser(String user_uid) {
-        UserEntity user = userRepository.findById(user_uid)
+    public void deleteUser(DeleteUserInputDTO inputDTO) {
+        UserEntity user = userRepository.findById(inputDTO.userUid())
                 .orElseThrow(() -> new RuntimeException("No user found"));
 
         user.setIsDeleted(true);
