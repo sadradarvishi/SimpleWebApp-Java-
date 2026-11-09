@@ -4,11 +4,14 @@ import com.example.simplewebapp.model.ProfileEntity;
 import com.example.simplewebapp.model.UserEntity;
 import com.example.simplewebapp.repository.ProfileRepository;
 import com.example.simplewebapp.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.simplewebapp.dto.profile.GetProfileInputDTO;
+import com.example.simplewebapp.dto.profile.GetProfileOutputDTO;
+import com.example.simplewebapp.dto.profile.SearchProfileOutputDTO;
+import com.example.simplewebapp.dto.profile.CreateProfileInputDTO;
+import com.example.simplewebapp.dto.profile.CreateProfileOutputDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ProfileService {
@@ -21,40 +24,49 @@ public class ProfileService {
         this.profileRepository = profileRepository;
     }
 
-    public ProfileEntity getProfile(String profile_uid) {
-        return profileRepository.getById(profile_uid);
+    public GetProfileOutputDTO getProfile(GetProfileInputDTO inputDTO) {
+        ProfileEntity profile =  profileRepository.getProfileById(inputDTO.profileUid())
+                .orElseThrow(() -> new RuntimeException("No profile found"));
+
+        return new GetProfileOutputDTO(
+                profile.getProfileUid(),
+                profile.getUser().getUserUid(),
+                profile.getDisplayName(),
+                profile.getBio(),
+                profile.getLocation(),
+                profile.getWebsite()
+        );
     }
 
-    public List<ProfileEntity> searchProfiles() {
+    public List<SearchProfileOutputDTO> searchProfiles() {
         return profileRepository.searchProfileWithUser();
     }
 
-    public ProfileEntity createProfile(String user_uid, Map<String, Object> input) {
-        if (!input.containsKey("display_name")) {
-            throw new IllegalArgumentException("display_name is required");
-        }
-
-        if (!input.containsKey("location")) {
-            throw new IllegalArgumentException("location is required");
-        }
-
-        UserEntity user = userRepository.findById(user_uid)
+    public CreateProfileOutputDTO createProfile(CreateProfileInputDTO inputDTO) {
+        UserEntity user = userRepository.findById(inputDTO.userUid())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        if (profileRepository.findProfileByUserId(inputDTO.userUid()).isPresent()) {
+            throw new IllegalArgumentException("This user already has a profile");
+        }
+
         ProfileEntity profile = new ProfileEntity();
+        profile.setUserUid(inputDTO.userUid());
+        profile.setDisplayName(inputDTO.displayName());
+        profile.setBio(inputDTO.bio());
+        profile.setLocation(inputDTO.location());
+        profile.setWebsite(inputDTO.website());
+        profile.setDeleted(false);
 
-        profile.setUser(user);
-        profile.setDisplayName((String) input.get("display_name"));
-        profile.setLocation((String) input.get("location"));
+        profileRepository.save(profile);
 
-        if (input.containsKey("bio")) {
-            profile.setBio((String) input.get("bio"));
-        }
-
-        if (input.containsKey("website")) {
-            profile.setWebsite((String) input.get("website"));
-        }
-
-        return profileRepository.save(profile);
+        return new CreateProfileOutputDTO(
+                profile.getProfileUid(),
+                profile.getDisplayName(),
+                profile.getBio(),
+                profile.getLocation(),
+                profile.getWebsite(),
+                profile.getDeleted()
+        );
     }
 }
