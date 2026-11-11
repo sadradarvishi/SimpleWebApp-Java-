@@ -3,6 +3,8 @@ package com.example.simplewebapp.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.Date;
+
 @Entity
 public class ProfileEntity {
     @Id
@@ -29,6 +31,12 @@ public class ProfileEntity {
 
     @Column(name = "website")
     private String website;
+
+    @Column(name = "created_at", nullable = false)
+    private Date createdAt;
+
+    @Column(name = "updated_at", nullable = true)
+    private Date updatedAt;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
@@ -91,4 +99,11 @@ public class ProfileEntity {
         return isDeleted;
     }
 
+    public Date getCreatedAt() {return createdAt;}
+
+    public Date getUpdatedAt() {return updatedAt;}
+
+    public void setCreatedAt(Date createdAt) {this.createdAt = createdAt;}
+
+    public void setUpdatedAt(Date updatedAt) {this.updatedAt = updatedAt;}
 }
