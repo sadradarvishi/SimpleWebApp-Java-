@@ -12,12 +12,20 @@ public class CommentEntity {
     @Column(name = "comment_uid")
     private String commentUid;
 
-    @ManyToOne
-    @JoinColumn(name = "post_uid", referencedColumnName = "post_uid")
-    private PostEntity post;
+    @Column(name = "post_uid", nullable = false)
+    private String postUid;
 
     @ManyToOne
-    @JoinColumn(name = "user_uid", referencedColumnName = "user_uid")
+    @JoinColumn(name = "post_uid", referencedColumnName = "post_uid",
+                  insertable = false, updatable = false)
+    private PostEntity post;
+
+    @Column(name = "user_uid", nullable = false)
+    private String userUid;
+
+    @ManyToOne
+    @JoinColumn(name = "user_uid", referencedColumnName = "user_uid",
+                  insertable = false, updatable = false)
     private UserEntity user;
 
     @Column(name = "content", nullable = false)
@@ -25,6 +33,13 @@ public class CommentEntity {
 
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
+
+    @Column(name = "updated_at", nullable = true)
+    private Date updatedAt;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
     public void setCommentUid(String commentUid) {
         this.commentUid = commentUid;
     }
@@ -64,4 +79,20 @@ public class CommentEntity {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
+    public String getPostUid() {return postUid;}
+
+    public String getUserUid() {return userUid;}
+
+    public void setPostUid(String postUid) {this.postUid = postUid;}
+
+    public void setUserUid(String userUid) {this.userUid = userUid;}
+
+    public Date getUpdatedAt() {return updatedAt;}
+
+    public Boolean getDeleted() {return isDeleted;}
+
+    public void setUpdatedAt(Date updatedAt) {this.updatedAt = updatedAt;}
+
+    public void setDeleted(Boolean deleted) {isDeleted = deleted;}
 }

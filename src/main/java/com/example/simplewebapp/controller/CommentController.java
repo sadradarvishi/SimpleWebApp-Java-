@@ -2,6 +2,13 @@ package com.example.simplewebapp.controller;
 
 import com.example.simplewebapp.model.CommentEntity;
 import com.example.simplewebapp.service.CommentService;
+import com.example.simplewebapp.dto.comment.GetCommentInputDTO;
+import com.example.simplewebapp.dto.comment.GetCommentOutputDTO;
+import com.example.simplewebapp.dto.comment.SearchCommentsInputDTO;
+import com.example.simplewebapp.dto.comment.SearchCommentsOutputDTO;
+import com.example.simplewebapp.dto.comment.CreateCommentInputDTO;
+import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,21 +26,20 @@ public class CommentController {
     }
 
     @GetMapping("/{comment_uid}/")
-    public ResponseEntity<CommentEntity> getComment(@PathVariable String comment_uid) {
-        return ResponseEntity.ok(comment_service.getComment(comment_uid));
+    public ResponseEntity<GetCommentOutputDTO> getComment(@Valid @ParameterObject GetCommentInputDTO inputDTO) {
+        return ResponseEntity.ok(comment_service.getComment(inputDTO));
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<CommentEntity>> searchComments() {
-        return ResponseEntity.ok(comment_service.searchComments());
+    public ResponseEntity<List<SearchCommentsOutputDTO>> searchComments(@ParameterObject SearchCommentsInputDTO inputDTO) {
+        return ResponseEntity.ok(comment_service.searchComments(inputDTO));
     }
 
     @PostMapping("/")
-    public ResponseEntity<CommentEntity> createComment(
-            @RequestHeader("user_uid") String user_uid,
-            @RequestBody Map<String, Object> input
-    ) {
-        return ResponseEntity.ok(comment_service.createComment(user_uid, input));
+    public ResponseEntity<Void> createComment(@ParameterObject CreateCommentInputDTO inputDTO) {
+        comment_service.createComment(inputDTO);
+
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{comment_uid}/")
