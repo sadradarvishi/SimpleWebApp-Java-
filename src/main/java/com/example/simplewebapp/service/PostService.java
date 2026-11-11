@@ -4,7 +4,14 @@ import com.example.simplewebapp.model.PostEntity;
 import com.example.simplewebapp.model.UserEntity;
 import com.example.simplewebapp.repository.PostRepository;
 import com.example.simplewebapp.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.simplewebapp.dto.post.GetPostInputDTO;
+import com.example.simplewebapp.dto.post.GetPostOutputDTO;
+import com.example.simplewebapp.dto.post.SearchPostInputDTO;
+import com.example.simplewebapp.dto.post.SearchPostOutputDTO;
+import com.example.simplewebapp.dto.post.CreatePostInputDTO;
+import com.example.simplewebapp.dto.post.CreatePostOutputDTO;
+import com.example.simplewebapp.dto.post.UpdatePostInputDTO;
+import com.example.simplewebapp.dto.post.DeletePostInputDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,65 +29,65 @@ public class PostService {
         this.userRepository = userRepository;
     }
 
-    public PostEntity getPost(String post_uid) {
-        return postRepository.findById(post_uid).orElseThrow(() -> new RuntimeException("No user found"));
+    public GetPostOutputDTO getPost(GetPostInputDTO inputDTO) {
+        return postRepository.getPostById(inputDTO.postUid())
+                .orElseThrow(() -> new RuntimeException("Post Not found"));
     }
 
-    public List<PostEntity> searchPosts() {
-        return postRepository.searchPostsWithUsers();
+    public List<SearchPostOutputDTO> searchPosts(SearchPostInputDTO inputDTO) {
+        return postRepository.searchPosts(
+                inputDTO.userUid(),
+                inputDTO.createdAtFrom(),
+                inputDTO.createdAtTo()
+        );
     }
 
-    public PostEntity createPost(String user_uid, Map<String, Object> input) {
-
-        if (!input.containsKey("title")) {
-            throw new IllegalArgumentException("title is required");
-        }
-
-        if (!input.containsKey("content")) {
-            throw new IllegalArgumentException("content is required");
-        }
-
-        UserEntity user = userRepository.findById(user_uid)
+    public CreatePostOutputDTO createPost(CreatePostInputDTO inputDTO) {
+        UserEntity user = userRepository.getUserById(inputDTO.userUid())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         PostEntity post = new PostEntity();
 
-        post.setUser(user);
-        post.setTitle((String) input.get("title"));
-        post.setContent((String) input.get("content"));
+        post.setUserUid(inputDTO.userUid());
+        post.setTitle(inputDTO.title());
+        post.setContent(inputDTO.content());
 
         post.setCreatedAt(new Date());
 
-        if (input.containsKey("updated_at")) {
-            post.setUpdatedAt((Date) input.get("updated_at"));
-        }
+        postRepository.save(post);
 
-        return postRepository.save(post);
+        return new CreatePostOutputDTO(
+                post.getPostUid(),
+                post.getUserUid(),
+                post.getCreatedAt(),
+                post.getUpdatedAt(),
+                post.getContent(),
+                post.getTitle(),
+                post.isDeleted()
+        );
     }
 
-    public PostEntity updatePost(String post_uid, Map<String, Object> input) {
-
-        PostEntity post = postRepository.findById(post_uid)
+    public void updatePost(UpdatePostInputDTO inputDTO) {
+        PostEntity post = postRepository.getPostByIdForUpdate(inputDTO.postUid())
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
-        if (input.containsKey("title")) {
-            post.setTitle((String) input.get("title"));
+        if (inputDTO.content() != null) {
+            post.setContent(inputDTO.content());
         }
 
-        if (input.containsKey("content")) {
-            post.setContent((String) input.get("content"));
+        if (inputDTO.title() != null) {
+            post.setContent(inputDTO.title());
         }
 
         post.setUpdatedAt(new Date());
 
-        return postRepository.save(post);
+        postRepository.save(post);
     }
 
-    public void deletePost(String post_uid) {
-
-        PostEntity post = postRepository.findById(post_uid)
-                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
-
-        postRepository.delete(post);
+    public void deletePost(DeletePostInputDTO inputDTO) {
+        int updated = postRepository.softDeleteById(inputDTO.postUid());
+        if (updated == 0) {
+            throw new IllegalArgumentException("Post not found");
+        }
     }
 }

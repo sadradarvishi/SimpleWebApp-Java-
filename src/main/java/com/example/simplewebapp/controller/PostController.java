@@ -1,12 +1,20 @@
 package com.example.simplewebapp.controller;
 
-import com.example.simplewebapp.model.PostEntity;
 import com.example.simplewebapp.service.PostService;
+import com.example.simplewebapp.dto.post.GetPostInputDTO;
+import com.example.simplewebapp.dto.post.GetPostOutputDTO;
+import com.example.simplewebapp.dto.post.SearchPostInputDTO;
+import com.example.simplewebapp.dto.post.SearchPostOutputDTO;
+import com.example.simplewebapp.dto.post.CreatePostInputDTO;
+import com.example.simplewebapp.dto.post.CreatePostOutputDTO;
+import com.example.simplewebapp.dto.post.UpdatePostInputDTO;
+import com.example.simplewebapp.dto.post.DeletePostInputDTO;
+import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/posts")
@@ -19,38 +27,30 @@ public class PostController {
     }
 
     @GetMapping("/{post_uid}/")
-    public ResponseEntity<PostEntity> getPost(
-            @PathVariable String post_uid
-    ) {
-        return ResponseEntity.ok(post_service.getPost(post_uid));
+    public ResponseEntity<GetPostOutputDTO> getPost(@Valid @ParameterObject GetPostInputDTO inputDTO) {
+        return ResponseEntity.ok(post_service.getPost(inputDTO));
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<PostEntity>> searchPosts() {
-        return ResponseEntity.ok(post_service.searchPosts());
+    public ResponseEntity<List<SearchPostOutputDTO>> searchPosts(@ParameterObject SearchPostInputDTO inputDTO) {
+        return ResponseEntity.ok(post_service.searchPosts(inputDTO));
     }
 
     @PostMapping("/")
-    public ResponseEntity<PostEntity> createPost(
-            @RequestHeader("user_uid") String user_uid,
-            @RequestBody Map<String, Object> input
-    ) {
-        return ResponseEntity.ok(post_service.createPost(user_uid, input));
+    public ResponseEntity<CreatePostOutputDTO> createPost(@ParameterObject CreatePostInputDTO inputDTO) {
+        return ResponseEntity.ok(post_service.createPost(inputDTO));
     }
 
     @PatchMapping("/{post_uid}/")
-    public ResponseEntity<PostEntity> updatePost(
-            @PathVariable String post_uid,
-            @RequestBody Map<String, Object> input
-    ) {
-        return ResponseEntity.ok(post_service.updatePost(post_uid, input));
+    public ResponseEntity<Void> updatePost(@Valid @ParameterObject UpdatePostInputDTO inputDTO) {
+        post_service.updatePost(inputDTO);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{post_uid}/")
-    public ResponseEntity<Void> deletePost(
-            @PathVariable String post_uid
-    ) {
-        post_service.deletePost(post_uid);
+    public ResponseEntity<Void> deletePost(@Valid @ParameterObject DeletePostInputDTO inputDTO) {
+        post_service.deletePost(inputDTO);
 
         return ResponseEntity.noContent().build();
     }
